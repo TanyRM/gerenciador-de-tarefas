@@ -19,6 +19,15 @@ class Gerenciador {
     public function adicionarUsuario($usuario){
         $this->usuarios[] = $usuario;
     }
+
+    public function getUsuario($nomeUsuario) {
+        foreach ($this->usuarios as $usuario) {
+            if ($usuario->getNome() === $nomeUsuario) {
+                return $usuario;
+            }
+        }
+        return null;
+    }
 }
 
 

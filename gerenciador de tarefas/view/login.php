@@ -3,34 +3,34 @@ require_once '../models/Usuario.php';
 require_once '../controllers/Gerenciador.php';
 session_start();
 
-// Verifica se a instância do Gerenciador está definida na sessão
+// verifica se a instância do Gerenciador está definida na sessão
 if (!isset($_SESSION['gerenciador'])) {
     $_SESSION['mensagem'] = "Erro: Instância do Gerenciador não encontrada.";
-    header('Location: index.php'); // Redireciona para a página inicial
+    header('Location: index.php'); // redireciona para a página inicial
     exit;
 }
 
 $gerenciador = $_SESSION['gerenciador'];
-//verifica se tem mensagem na sessão (caso venha da página de cadastro)
+// verifica se tem mensagem na sessão (caso venha da página de cadastro)
 if (isset($_SESSION['mensagem'])) {
-    echo $_SESSION['mensagem']; // Exibe a mensagem
-    unset($_SESSION['mensagem']); // Limpa a mensagem da sessão 
+    echo $_SESSION['mensagem']; // exibe a mensagem
+    unset($_SESSION['mensagem']); // limpa a mensagem da sessão 
 }
 
 //readline() não funciona para ler dados em pag web
-//verificar se a requisição é do tipo POST
+// verificar se a requisição é do tipo POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nomeUsuario = $_POST['nome']; //atribui a variavel o valor inserido na pag web 
+    $nomeUsuario = $_POST['nome']; // atribui a variavel o valor inserido na pag web 
     $senha = $_POST['senha']; 
 
+    // verifica se usuario e senha estão corretos
     if ($gerenciador->validarDados($nomeUsuario, $senha)) {
         echo "Login bem-sucedido!";
-        $usuario = new Usuario(' ',$nomeUsuario, $senha);
-        $_SESSION['usuario'] = $usuario; //registra o usuario que está usando a sessão
-
-        header('Location: pagina_inicial.php'); // Redireciona para a página inicial
+        $_SESSION['nomeUsuario'] = $nomeUsuario; // armazena o nome de usuário na sessão
+    
+        header('Location: pagina_inicial.php'); // redireciona para a página inicial
         exit;
-    } 
+    }
     else {
         echo "Nome de usuário ou senha incorretos.";
     }
@@ -121,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h1>Login</h1>
+    <!-- formulário de login -->
     <form class="login-form" method="post">
         <label for="nome">Nome de usuário:</label>
         <input type="text" id="nome" name="nome" required>

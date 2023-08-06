@@ -5,8 +5,9 @@ require_once '../controllers/Gerenciador.php';
 session_start();
 $gerenciador = $_SESSION['gerenciador'];
 
-if (isset($_SESSION['usuario'])) {
-    $usuario = $_SESSION['usuario'];
+if (isset($_SESSION['nomeUsuario'])) {
+    $nomeUsuario = $_SESSION['nomeUsuario'];
+    $usuario = $gerenciador->getUsuario($nomeUsuario);
 } 
 else {
     $_SESSION['mensagem'] = "Você precisa realizar login!";
@@ -18,7 +19,7 @@ if (isset($_GET['titulo'])) {
     $tituloLista = $_GET['titulo'];
 
     // Encontra a lista correspondente na lista de listas do usuário
-    $listaExcluir = encontrarListaPorTitulo($usuario->getListas(), $tituloLista);
+    $listaExcluir = encontrarLista($usuario->getListas(), $tituloLista);
 
     if (!$listaExcluir) {
         $_SESSION['mensagem'] = "Lista não encontrada!";
@@ -32,7 +33,7 @@ if (isset($_GET['titulo'])) {
 }
 
 // Função para encontrar uma lista pelo título
-function encontrarListaPorTitulo($listas, $titulo) {
+function encontrarLista($listas, $titulo) {
     foreach ($listas as $lista) {
         if ($lista->getTitulo() === $titulo) {
             return $lista;
@@ -51,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['mensagem'] = "Lista excluída com sucesso!";
         header('Location: pagina_inicial.php');
         exit;
-    } elseif (isset($_POST['cancelar'])) {
+    } 
+    elseif (isset($_POST['cancelar'])) {
         // Redireciona o usuário de volta para a página inicial
         header('Location: pagina_inicial.php');
         exit;
@@ -79,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <h2>Deseja realmente excluir a lista "<?php echo $listaExcluir->getTitulo(); ?>"?</h2>
+    <h2>Deseja excluir a lista "<?php echo $listaExcluir->getTitulo(); ?>"?</h2>
     <form method="post">
         <input type="submit" name="confirmar" value="Confirmar">
         <input type="submit" name="cancelar" value="Cancelar">

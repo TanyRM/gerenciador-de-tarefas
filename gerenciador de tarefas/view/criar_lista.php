@@ -5,14 +5,15 @@ require_once '../controllers/Gerenciador.php';
 session_start();
 $gerenciador = $_SESSION['gerenciador'];
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION['usuario'])) {
+// verifica se o usuário está logado
+if (!isset($_SESSION['nomeUsuario'])) {
     $_SESSION['mensagem'] = "Você precisa realizar login!";
     header('Location: login.php');
     exit;
 }
 
-$usuario = $_SESSION['usuario'];
+$nomeUsuario = $_SESSION['nomeUsuario'];
+$usuario = $gerenciador->getUsuario($nomeUsuario);
 
 // verifica se o formulário foi submetido para criar uma nova lista
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -108,11 +109,12 @@ $listasUsuario = $usuario->getListas(); // atualiza o array com as listas do usu
 </head>
 <body>
     <h1>Nova Lista</h1>
+    <!-- formulario de nova lista -->
     <form method="post">
         <label for="titulo">Título:</label>
         <input type="text" id="titulo" name="titulo" required>
         <br>
-        <input type="submit" value="Criar">
+        <input type="submit" value="Criar"> <!-- envia o formulario -->
     </form>
     <a href="pagina_inicial.php" class="back-link">Voltar</a>
 </body>

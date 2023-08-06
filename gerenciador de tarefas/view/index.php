@@ -2,7 +2,7 @@
 require_once '../controllers/Gerenciador.php';
 session_start();
 
-// Verifica se a instância do Gerenciador já está na sessão
+// verifica se a instância do Gerenciador já está na sessão
 if (!isset($_SESSION['gerenciador'])) {
     $_SESSION['gerenciador'] = new Gerenciador();
 }
@@ -27,14 +27,14 @@ if (!isset($_SESSION['gerenciador'])) {
 
         h1 {
             color: #333;
-            margin-bottom: 20px; /* Adiciona espaço abaixo do título */
+            margin-bottom: 20px; /* adiciona espaço abaixo do título */
         }
 
         .links {
             text-align: center;
             display: flex;
-            flex-direction: column; /* Alinha os links verticalmente */
-            align-items: center; /* Centraliza os links horizontalmente */
+            flex-direction: column; /* alinha os links verticalmente */
+            align-items: center; /* centraliza os links horizontalmente */
         }
 
         .link-button {

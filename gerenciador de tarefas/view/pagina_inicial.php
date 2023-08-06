@@ -7,16 +7,23 @@ session_start();
 $gerenciador = $_SESSION['gerenciador'];
 
 // verifica se o usuário está logado
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['nomeUsuario'])) {
     $_SESSION['mensagem'] = "Você precisa realizar login!";
     header('Location: login.php');
     exit;
 }
 
-$usuario = $_SESSION['usuario'];
+if (isset($_SESSION['mensagem'])) {
+    echo $_SESSION['mensagem']; // exibe a mensagem
+    unset($_SESSION['mensagem']); // limpa a mensagem da sessão 
+}
+
+// registra o usuario da sessão
+$nomeUsuario = $_SESSION['nomeUsuario'];
+$usuario = $gerenciador->getUsuario($nomeUsuario);
 
 // função para encontrar uma lista pelo título
-function encontrarListaPorTitulo($listas, $titulo) {
+function encontrarLista($listas, $titulo) {
     foreach ($listas as $lista) {
         if ($lista->getTitulo() === $titulo) {
             return $lista;
@@ -158,7 +165,7 @@ function encontrarListaPorTitulo($listas, $titulo) {
 <body>
     <h1>Gerenciador de tarefas</h1>
 
-    <!-- Ferramenta de busca -->
+    <!-- ferramenta de busca -->
     <form method="get" action="pagina_inicial.php">
         <label for="q">Buscar lista:</label>
         <input type="text" id="q" name="q">
@@ -166,16 +173,16 @@ function encontrarListaPorTitulo($listas, $titulo) {
     </form>
     
     <?php
-    // Verifica se o termo de busca foi enviado pelo formulário
+    // verifica se o termo de busca foi enviado pelo formulário
     if (isset($_GET['q'])) {
         $termoBusca = $_GET['q'];
 
-        // Filtra as listas com base no termo de busca
+        // filtra as listas com base no termo de busca
         $listasFiltradas = array_filter($usuario->getListas(), function ($lista) use ($termoBusca) {
             return strpos($lista->getTitulo(), $termoBusca) !== false;
         });
 
-        // Exibe as listas filtradas
+        // exibe as listas filtradas
         if (!empty($listasFiltradas)) {
             echo "<h2>Listas encontradas:</h2>";
             echo "<ul>";
@@ -183,19 +190,20 @@ function encontrarListaPorTitulo($listas, $titulo) {
                 echo "<li><a href='exibir_lista.php?titulo=" . urlencode($lista->getTitulo()) . "'>" . $lista->getTitulo() . "</a></li>";
             }
             echo "</ul>";
-        } else {
+        } 
+        else {
             echo "<p>Nenhuma lista encontrada.</p>";
         }
     }
     ?>
     
-    <!-- Lista de todas as listas -->
+    <!-- lista de todas as listas -->
     <h2>Suas listas:</h2>
 <ul>
     <?php foreach ($usuario->getListas() as $lista) : ?>
         <li>
-            <a href='exibir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>'><?php echo $lista->getTitulo(); ?></a>
-            <a href='excluir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>' class="delete-button"><img src='imagens/excluir.png' class='excluir-icon' alt='Excluir' title='Excluir'></a>
+            <a href='exibir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>'><?php echo $lista->getTitulo(); ?></a> <!-- link para exibir a lista -->
+            <a href='excluir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>' class="delete-button"><img src='imagens/excluir.png' class='excluir-icon' alt='Excluir' title='Excluir'></a> <!-- link para excluir a lista -->
         </li>
     <?php endforeach; ?>
 </ul>
@@ -203,5 +211,5 @@ function encontrarListaPorTitulo($listas, $titulo) {
     <a href="criar_lista.php" class="create-button">+</a>
 </div>
 </body>
-<a href="logout.php" class="logout-link">Sair</a>
+<a href="confirmar_logout.php" class="logout-link">Sair</a>
 </html>

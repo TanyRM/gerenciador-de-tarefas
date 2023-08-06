@@ -1,8 +1,7 @@
 <?php
-
 require_once '../models/Usuario.php';
 require_once '../controllers/Gerenciador.php';
-session_start(); // Inicializa a sessão (retoma a sessão da pagina index)
+session_start(); // inicializa a sessão (retoma a sessão da pagina index)
 $gerenciador = $_SESSION['gerenciador']; //retoma a instancia de Gerenciador criada na pagina index 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,10 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gerenciador->adicionarUsuario($usuario); //adiciona o usuario cadastrado no servidor
     $_SESSION['mensagem'] = "Cadastro realizado com sucesso!";
 
-    header('Location: login.php'); // Redireciona para a página de login
+    header('Location: login.php'); // redireciona para a página de login
     exit;
 }
-
 ?>
 
 <!-- formulario HTML com requisição POST -->
@@ -102,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <h1>Cadastre-se</h1>
+    <!-- formulario de cadastro -->
     <form class="login-form" method="post">
         <label for="email">Email:</label>
         <input type="text" id="email" name="email" required>

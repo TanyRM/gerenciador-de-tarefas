@@ -16,43 +16,19 @@ class Usuario {
         return $this->nome;
     }
 
-    public function setNome($nome): self {
-        $this->nome = $nome;
-        return $this;
-    }
-
-    public function getEmail() {
-        return $this->email;
-    }
-
-    public function setEmail($email): self {
-        $this->email = $email;
-        return $this;
-    }
-
     public function getSenha() {
         return $this->senha;
-    }
-
-    public function setSenha($senha): self {
-        $this->senha = $senha;
-        return $this;
     }
 
     public function getListas() {
         return $this->listas;
     }
 
-    public function setListas($listas): self {
-        $this->listas = $listas;
-        return $this;
-    }
-
     public function adicionarLista($lista) {
         $this->listas[] = $lista;
     }
 
-    private function getIndiceListaPorTitulo($titulo) {
+    private function getIndiceLista($titulo) {
         foreach ($this->listas as $indice => $lista) {
             if ($lista->getTitulo() === $titulo) {
                 return $indice;
@@ -63,7 +39,7 @@ class Usuario {
 
     public function excluirLista($lista) {
         // Encontra o índice da lista no array de listas do usuário
-        $indice = $this->getIndiceListaPorTitulo($lista->getTitulo());
+        $indice = $this->getIndiceLista($lista->getTitulo());
 
         // Se o índice for encontrado, remove a lista
         if ($indice !== false) {

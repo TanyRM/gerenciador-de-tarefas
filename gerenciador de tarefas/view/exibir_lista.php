@@ -7,19 +7,20 @@ session_start();
 $gerenciador = $_SESSION['gerenciador'];
 
 // verifica se o usuário está logado
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['nomeUsuario'])) {
     $_SESSION['mensagem'] = "Você precisa realizar login!";
     header('Location: login.php');
     exit;
 }
 
-$usuario = $_SESSION['usuario'];
+$nomeUsuario = $_SESSION['nomeUsuario'];
+$usuario = $gerenciador->getUsuario($nomeUsuario);
 
 // função para encontrar uma lista pelo título
-function encontrarListaPorTitulo($listas, $titulo) {
+function encontrarLista($listas, $titulo) {
     foreach ($listas as $lista) {
         if ($lista->getTitulo() === $titulo) {
-            //echo "Encontrou a lista com título: $titulo<br>";
+            //echo "Encontrou a lista com título: $titulo<br>"; --Depuração
             return $lista;
         }
     }
@@ -31,7 +32,7 @@ function encontrarListaPorTitulo($listas, $titulo) {
 if (isset($_GET['titulo'])) {
     $tituloLista = $_GET['titulo'];
 
-    $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloLista);
+    $listaExibir = encontrarLista($usuario->getListas(), $tituloLista);
 
     if (!$listaExibir) {
         $_SESSION['mensagem'] = "Lista não encontrada!";
@@ -40,47 +41,55 @@ if (isset($_GET['titulo'])) {
     }
 } 
 
-// Verifica se a requisição é POST para adicionar um novo item à lista ou excluir um item
+// verifica se a requisição é POST para adicionar um novo item à lista ou excluir um item
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // lógica para adicionar novo item
     if (isset($_POST['novo_item']) && isset($_POST['titulo'])) {
         $tituloLista = $_POST['titulo'];
-        $novoItemNome = $_POST['novo_item']; // Obter apenas o nome do novo item
+        $novoItemNome = $_POST['novo_item']; // atribui o nome do novo item
 
         // encontrar a lista correspondente na lista de listas do usuário
-        $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloLista);
+        $listaExibir = encontrarLista($usuario->getListas(), $tituloLista);
 
         // verificar se é uma instância de Lista e adiciona o novo item
         if ($listaExibir instanceof Lista) {
-            $novoItem = new Item($novoItemNome); // Criar um novo objeto Item com o nome fornecido
-            $listaExibir->adicionarItem($novoItem); // Adicionar o objeto Item à lista
-        } else {
-            $_SESSION['mensagem'] = "Lista não encontrada!";
-        }
-    } elseif (isset($_POST['excluir_item']) && isset($_POST['item_index']) && isset($_POST['titulo'])) {
-        $itemIndex = $_POST['item_index'];
-        $tituloLista = $_POST['titulo']; // Obter o título da lista
-        $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloLista);
-
-        // Verifica se a lista existe e se é uma instância de Lista
-        if ($listaExibir instanceof Lista) {
-            // Chama o método excluirItem da lista para remover o item pelo índice
-            $listaExibir->excluirItem($itemIndex);
-        } else {
+            $novoItem = new Item($novoItemNome); // criar um novo objeto Item com o nome
+            $listaExibir->adicionarItem($novoItem); // adiciona o objeto à lista
+        } 
+        else {
             $_SESSION['mensagem'] = "Lista não encontrada!";
         }
     }
+    // lógica para excluir item
+    elseif (isset($_POST['excluir_item']) && isset($_POST['item_index']) && isset($_POST['titulo'])) {
+        $itemIndex = $_POST['item_index']; // obtem o indice do objeto a ser excluido
+        $tituloLista = $_POST['titulo']; // obter o título da lista
+        
+        $tituloListaDecodificado = urldecode($tituloLista); // decodificar o título para URL
+        $listaExibir = encontrarLista($usuario->getListas(), $tituloListaDecodificado);
+
+        // verifica se a lista existe e se é uma instância de Lista
+        if ($listaExibir instanceof Lista) {
+            // chama o método excluirItem da lista para remover o item pelo índice
+            $listaExibir->excluirItem($itemIndex);
+        } 
+        else {
+            $_SESSION['mensagem'] = "Lista não encontrada!";
+        }
+    }
+    // lógica para editar o titulo
     else if (isset($_POST['editar_titulo']) && isset($_POST['novo_titulo']) && isset($_POST['titulo'])) {
         $tituloLista = $_POST['titulo']; // Obter o título da lista
         $novoTitulo = $_POST['novo_titulo']; // Obter o novo título da lista
 
         // encontrar a lista correspondente na lista de listas do usuário
-        $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloLista);
+        $listaExibir = encontrarLista($usuario->getListas(), $tituloLista);
 
         // verificar se é uma instância de Lista e atualizar o título
         if ($listaExibir instanceof Lista) {
             $listaExibir->setTitulo($novoTitulo);
             
-            // Redirecionar para a página exibir_lista.php com o novo título
+            // redirecionar para a página exibir_lista.php com o novo título
             header("Location: exibir_lista.php?titulo=" . urlencode($novoTitulo));
             exit;
         }
@@ -105,12 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             min-height: 100vh;
         }
-        /* Estilizando os itens concluídos com sublinhado */
+        
         .concluido {
-            text-decoration: line-through;
+            text-decoration: line-through; /* estilizando os itens concluídos com sublinhado */
         }
 
-        /* Estilizando o quadrado para concluir/desconcluir itens */
+        /* estilizando o quadrado para concluir/desconcluir itens */
         .concluir {
             display: inline-block;
             width: 15px;
@@ -121,17 +130,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             line-height: 15px; /* Centralizar verticalmente o texto no quadrado */
         }
 
-        /* Estilizando a lista */
+        /* estilizando a lista */
         .item-list {
             padding-left: 20px;
             padding-right: 5px;
         }
 
         .item-nome {
-            padding-left: 5px; /* Adicione o espaçamento desejado */
+            padding-left: 5px; /* espaçamento entre o quadrado e o item */
         }
 
-        /* Estilizando o campo de edição do item */
+        /* estilizando o campo de edição do item */
         .editar-item-form {
             display: none;
         }
@@ -205,19 +214,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             bottom: 20px;
         }
 
-        .editar-icon {
+        .editar-icon { /* formatar o icon de edição */
             width: 15px;
             height: 15px;
             margin-left: 50px;
         }
 
-        .editar-icon-titulo {
+        .editar-icon-titulo { /* formatar o icon de edição no titulo */
             width: 15px;
             height: 15px;
             margin-left: 10px;
         }
 
-        .excluir-icon {
+        .excluir-icon { /* formatar o icon de excluir */
             width: 15px;
             height: 15px;
             margin-left: 5px;
@@ -225,126 +234,137 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <?php if ($listaExibir) { // se for instância de lista ?>
+    <?php 
+    if ($listaExibir) { // se for instância de lista ?>
         
-        <!-- Verifica se está no modo de edição do título -->
-        <?php if (isset($_GET['editar_titulo'])) {
-            // Verifica se o formulário de edição foi submetido
+        <!-- verifica se tem requisição é GET para editar o titulo -->
+        <?php 
+        if (isset($_GET['editar_titulo'])) {
+            // verifica se o formulário de edição foi submetido
             if (isset($_POST['editar_titulo']) && isset($_POST['novo_titulo'])) {
                 $novoTitulo = $_POST['novo_titulo']; // Obter o novo título da lista
 
                 $listaExibir->setTitulo($novoTitulo);
                 
-                // Redirecionar para a página exibir_lista.php com o novo título
+                // redirecionar para a página exibir_lista.php com o novo título
                 header("Location: exibir_lista.php?titulo=" . urlencode($novoTitulo));
                 exit;
-            } else {
-                // Se ainda não foi submetido o formulário de edição, exibir o formulário
-        ?>
-            <!-- Formulário para editar o título da lista -->
-            <form method="post" class="editar-titulo-form">
-                <input type="hidden" name="editar_titulo" value="1">
-                <label for="novo_titulo">Novo Título:</label>
-                <input type="text" id="novo_titulo" name="novo_titulo" value="<?php echo $listaExibir->getTitulo(); ?>" required>
-                <input type="submit" value="Salvar">
-            </form>
-        <?php } } else { ?>
-        <!-- Exibe o título da lista com um link para editar -->
-        <h2>
-            <?php echo $listaExibir->getTitulo(); ?>
-            <a href="?titulo=<?php echo urlencode($listaExibir->getTitulo()); ?>&editar_titulo=1"><img src="imagens/edicao.png" alt="Editar" class="editar-icon-titulo"></a>
-        </h2>
-        <?php } ?>
+            } 
+            else {
+                // se ainda não foi submetido o formulário de edição, exibir o formulário ?>
+                <!-- formulário para editar o título da lista -->
+                <form method="post" class="editar-titulo-form">
+                    <input type="hidden" name="editar_titulo" value="1">
+                    <label for="novo_titulo">Novo Título:</label>
+                    <input type="text" id="novo_titulo" name="novo_titulo" value="<?php echo $listaExibir->getTitulo(); ?>" required>
+                    <input type="submit" value="Salvar">
+                </form>
+        <?php } 
+        } 
+        else { ?>
+            <!-- se não exibe o título da lista com um link para editar -->
+            <h2>
+                <?php echo $listaExibir->getTitulo(); ?>
+                <a href="?titulo=<?php echo urlencode($listaExibir->getTitulo()); ?>&editar_titulo=1"><img src="imagens/edicao.png" alt="Editar" class="editar-icon-titulo"></a>
+            </h2>
+        <?php } 
 
-        <?php
         $itens = $listaExibir->getItens();
 
-        // Verifica se a requisição é POST para concluir/desconcluir ou editar um item
+        // verifica se a requisição é POST
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // verifica se é para concluir/desconcluir um item 
             if (isset($_POST['alterar_status']) && isset($_POST['item_index']) && isset($_POST['titulo'])) {
-                $itemIndex = $_POST['item_index'];
-                $tituloLista = $_POST['titulo']; // Obter o título da lista
+                $itemIndex = $_POST['item_index']; // obter o index do item
+                $tituloLista = $_POST['titulo']; // obter o título da lista
 
-                $tituloListaDecodificado = urldecode($tituloLista); // Decodificar o título
-                $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloListaDecodificado);
+                $tituloListaDecodificado = urldecode($tituloLista); // decodificar o título para URL
+                $listaExibir = encontrarLista($usuario->getListas(), $tituloListaDecodificado);
 
                 if (isset($itens[$itemIndex]) && $itens[$itemIndex] instanceof Item) {
                     $itemConcluido = $itens[$itemIndex]->getConcluido();
-                    $itens[$itemIndex]->setConcluido(!$itemConcluido); // Alterar o status do item
+                    $itens[$itemIndex]->setConcluido(!$itemConcluido); // altera o status do item (conclui ou desconclui)
                 }
-            } else if (isset($_POST['editar_item']) && isset($_POST['item_index']) && isset($_POST['titulo']) && isset($_POST['novo_nome_item'])) {
+            }
+            // verifica se é pra editar um item
+            else if (isset($_POST['editar_item']) && isset($_POST['item_index']) && isset($_POST['titulo']) && isset($_POST['novo_nome_item'])) {
                 $itemIndex = $_POST['item_index'];
-                $tituloLista = $_POST['titulo']; // Obter o título da lista
-                $novoNomeItem = $_POST['novo_nome_item']; // Obter o novo nome do item
+                $tituloLista = $_POST['titulo']; 
+                $novoNomeItem = $_POST['novo_nome_item']; // obter o novo nome do item
             
-                $tituloListaDecodificado = urldecode($tituloLista); // Decodificar o título
-                $listaExibir = encontrarListaPorTitulo($usuario->getListas(), $tituloListaDecodificado);
+                $tituloListaDecodificado = urldecode($tituloLista); // decodificar o título para URL
+                $listaExibir = encontrarLista($usuario->getListas(), $tituloListaDecodificado);
             
                 if (isset($itens[$itemIndex]) && $itens[$itemIndex] instanceof Item) {
-                    $itens[$itemIndex]->setNome($novoNomeItem); // Alterar o nome do item
+                    $itens[$itemIndex]->setNome($novoNomeItem); // altera o nome do item
                 }
-                header("Location: exibir_lista.php?titulo=" . urlencode($listaExibir->getTitulo())); // Corrigido o redirecionamento
+                header("Location: exibir_lista.php?titulo=" . urlencode($listaExibir->getTitulo())); // recarrega a pagina de exibição
                 exit;
             }
         }
         ?>
-
+        <!-- exibe os itens e os elementos da lista -->
         <ul class='item-list'>
-            <?php foreach ($itens as $index => $item) {
-                $itemNome = $item->getNome();
-                $itemConcluido = $item->getConcluido();
+            <!-- atribui cada item temporariamente a $item -->
+            <?php 
+            foreach ($itens as $index => $item) {
+                $itemNome = $item->getNome(); // atribui o nome do item
+                $itemConcluido = $item->getConcluido(); // atribui o status do item
+                // quadrado de conclusão
                 echo "<li>";
-                echo "<form method='post' style='display: inline-block;'>";
-                echo "<input type='hidden' name='alterar_status' value='1'>";
-                echo "<input type='hidden' name='item_index' value='$index'>";
-                echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>"; // Adicione esta linha para enviar o título da lista
-                echo "<div class='concluir' onclick='parentNode.submit();'>";
-                echo ($itemConcluido ? '&#x2713;' : '&nbsp;'); // Exibir o marcador de acordo com o status do item
+                echo "<form method='post' style='display: inline-block;'>"; // exibe o quadrado
+                echo "<input type='hidden' name='alterar_status' value='1'>"; // envia a requisição para alterar 
+                echo "<input type='hidden' name='item_index' value='$index'>"; // indica o indice do item
+                echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>"; // envia o título da lista para recarregar a pagina
+                echo "<div class='concluir' onclick='parentNode.submit();'>"; // ao clicar para concluir sublinha o texto
+                echo ($itemConcluido ? '&#x2713;' : '&nbsp;'); // exibir o marcador de acordo com o status do item
                 echo "</div>";
                 echo "</form>";
                 
-                // Exibe o nome do item em modo de leitura ou edição
+                // exibe o nome do item em modo de leitura ou edição
                 echo "<span class='" . ($itemConcluido ? 'concluido' : '') . "'>";
-                if (isset($_GET['editar_item']) && $_GET['editar_item'] == $index) {
-                    // Exibir o formulário de edição para o item atual
-                    echo "<form method='post' class='editar-item-form show'>";
-                    echo "<input type='hidden' name='editar_item' value='$index'>";
-                    echo "<input type='hidden' name='item_index' value='$index'>";
-                    echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>";
-                    echo "<input type='text' name='novo_nome_item' value='$itemNome'>";
-                    echo "<button type='submit'>Salvar</button>";
+                if (isset($_GET['editar_item']) && $_GET['editar_item'] == $index) { // formulario se receber editar_item
+                    // exibir o item em modo de edição
+                    echo "<form method='post' class='editar-item-form show'>"; // exibe a caixa de texto para escrever o novo nome
+                    echo "<input type='hidden' name='editar_item' value='$index'>"; // envia a requisição para editar o nome do item e indica o indice
+                    echo "<input type='hidden' name='item_index' value='$index'>"; // envia o indice 
+                    echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>"; // envia o título da lista para recarregar a pagina
+                    echo "<input type='text' name='novo_nome_item' value='$itemNome'>"; // lê o novo nome do item
+                    echo "<button type='submit'>Salvar</button>"; // exibe o botao que salva o novo nome e atualiza
                     echo "</form>";
-                } else {
-                    // Exibir o nome do item em modo de leitura
-                    echo "<span class='item-nome'>$itemNome</span>";
-                    echo " <a href='?titulo=" . urlencode($listaExibir->getTitulo()) . "&editar_item=$index'>";
-                    echo "<img src='imagens/edicao.png' alt='Editar' class='editar-icon'>";
+                } 
+                else {
+                    // exibir o nome do item em modo de leitura
+                    echo "<span class='item-nome'>$itemNome</span>"; // exibe o nome do item
+                    echo " <a href='?titulo=" . urlencode($listaExibir->getTitulo()) . "&editar_item=$index'>"; // exibe o link que envia a requisição de editar o item
+                    echo "<img src='imagens/edicao.png' alt='Editar' class='editar-icon'>"; 
                     echo "</a>";
                 }
                 echo "</span>";
 
-                // Adicione a opção de excluir item
+                // opção de excluir item
                 echo "<form method='post' style='display: inline-block; background: none; border: none; padding: 0; margin: 0;'>";
-                echo "<input type='hidden' name='excluir_item' value='1'>";
-                echo "<input type='hidden' name='item_index' value='$index'>";
-                echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>";
+                echo "<input type='hidden' name='excluir_item' value='1'>"; // envia a requisição para excluir
+                echo "<input type='hidden' name='item_index' value='$index'>"; // envia o index 
+                echo "<input type='hidden' name='titulo' value='". urlencode($listaExibir->getTitulo()) ."'>"; // envia o titulo da lista
                 echo "<button type='submit' style='background: none; border: none; padding: 0; margin: 0; cursor: pointer;'>";
                 echo "<img src='imagens/excluir.png' class='excluir-icon' alt='Excluir' title='Excluir'>";
                 echo "</button>";
                 echo "</form>";
-
                 echo "</li>";
-
             } ?>
         </ul>
 
+        <!-- formulario de novo item -->
         <form method="post">
             <input type="hidden" name="titulo" value="<?php echo $listaExibir->getTitulo(); ?>">
-            <label for="novo_item">Novo Item:</label>
-            <input type="text" id="novo_item" name="novo_item" required>
-            <input type="submit" value="Adicionar">
+            <label for="novo_item">Novo Item:</label> 
+            <input type="text" id="novo_item" name="novo_item" required> 
+            <input type="submit" value="Adicionar"> 
         </form>
-    <?php } else { ?>
+    <?php } 
+    // se não identificar instância de Lista
+    else { ?> <!-- erro para exluir -->
         <p>Lista não encontrada.</p>
     <?php } ?>
     <a href="pagina_inicial.php" class="back-link">Voltar</a>

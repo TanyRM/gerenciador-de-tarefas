@@ -27,24 +27,6 @@ class Item {
 		$this->concluido = $concluido;
 		return $this;
 	}
-    
-    public function concluirItem() {
-        $this->concluido = true;
-    }
-
-	public function getPrioridade() {
-		return $this->prioridade;
-	}
-	
-	public function setPrioridade($prioridade): self {
-		$this->prioridade = $prioridade;
-		return $this;
-	}
-
-    public function verificarConcluido() {
-        return $this->concluido;
-    }
-
 }
 
 ?>
