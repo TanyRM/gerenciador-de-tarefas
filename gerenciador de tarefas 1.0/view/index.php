@@ -1,0 +1,62 @@
+<?php
+require_once '../controllers/Gerenciador.php';
+session_start();
+
+// verifica se a instância do Gerenciador já está na sessão
+if (!isset($_SESSION['gerenciador'])) {
+    $_SESSION['gerenciador'] = new Gerenciador();
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Página Inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px; /* adiciona espaço abaixo do título */
+        }
+
+        .links {
+            text-align: center;
+            display: flex;
+            flex-direction: column; /* alinha os links verticalmente */
+            align-items: center; /* centraliza os links horizontalmente */
+        }
+
+        .link-button {
+            text-decoration: none;
+            color: #007bff;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .link-button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bem vindo(a)</h1>
+    <div class="links">
+        <a href="login.php" class="link-button">Entrar</a>
+        <a href="cadastro.php" class="link-button">Cadastrar</a>
+    </div>
+</body>
+</html>
