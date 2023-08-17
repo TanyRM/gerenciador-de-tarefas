@@ -1,48 +1,27 @@
 <?php
 require_once '../models/Usuario.php';
 require_once '../controllers/Gerenciador.php';
-session_start();
+session_start(); // inicializa a sessão (retoma a sessão da pagina index)
+$gerenciador = $_SESSION['gerenciador']; //retoma a instancia de Gerenciador criada na pagina index 
 
-// verifica se a instância do Gerenciador está definida na sessão
-if (!isset($_SESSION['gerenciador'])) {
-    $_SESSION['mensagem'] = "Erro: Instância do Gerenciador não encontrada.";
-    header('Location: index.php'); // redireciona para a página inicial
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email']; //atribui a variavel o valor inserido na pag web
+    $nome = $_POST['nome'];  
+    $senha = $_POST['senha'];
+
+    $usuario = new Usuario($email, $nome, $senha);
+    $gerenciador->adicionarUsuario($usuario); 
+    $_SESSION['mensagem'] = "Cadastro realizado com sucesso!";
+
+    header('Location: login.php'); // redireciona para a página de login
     exit;
 }
-
-$gerenciador = $_SESSION['gerenciador'];
-// verifica se tem mensagem na sessão (caso venha da página de cadastro)
-if (isset($_SESSION['mensagem'])) {
-    echo $_SESSION['mensagem']; // exibe a mensagem
-    unset($_SESSION['mensagem']); // limpa a mensagem da sessão 
-}
-
-//readline() não funciona para ler dados em pag web
-// verificar se a requisição é do tipo POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nomeUsuario = $_POST['nome']; // atribui a variavel o valor inserido na pag web 
-    $senha = $_POST['senha']; 
-
-    // verifica se usuario e senha estão corretos
-    if ($gerenciador->validarDados($nomeUsuario, $senha)) {
-        echo "Login bem-sucedido!";
-        $_SESSION['nomeUsuario'] = $nomeUsuario; // armazena o nome de usuário na sessão
-    
-        header('Location: pagina_inicial.php'); // redireciona para a página inicial
-        exit;
-    }
-    else {
-        echo "Nome de usuário ou senha incorretos.";
-    }
-}
-
 ?>
 
-<!-- formulario HTML com requisição POST -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title> 
+    <title>Cadastro</title> 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,8 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         .login-form {
             padding: 20px;
-            border-radius: 0; /* Remove a borda do container */
-            box-shadow: none; /* Remove a sombra */
+            border-radius: 0;
+            box-shadow: none;
             width: 300px;
             text-align: left;
         }
@@ -100,10 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #0056b3;
         }
 
-        .link-container {
+        .button-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: flex-end;
             margin-top: 10px;
         }
 
@@ -120,18 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <h1>Login</h1>
-    <!-- formulário de login -->
+    <h1>Cadastre-se</h1>
+    <!-- formulario de cadastro -->
     <form class="login-form" method="post">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
         <label for="nome">Nome de usuário:</label>
         <input type="text" id="nome" name="nome" required>
         <label for="senha">Senha:</label>
         <input type="password" id="senha" name="senha" required>
-        <button type="submit">Entrar</button>
-        <div class="link-container">
-            <a href="cadastro.php" class="register-link">Cadastrar</a>
+        <div class="button-container">
+            <button type="submit" style="width: 300px;">Cadastrar</button>
         </div>
     </form>
 </body>
 </html>
-

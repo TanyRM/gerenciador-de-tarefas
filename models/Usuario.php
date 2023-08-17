@@ -34,16 +34,13 @@ class Usuario {
                 return $indice;
             }
         }
-        return false; // Retorna false se a lista não for encontrada
+        return false; // retorna false se a lista não for encontrada
     }
 
     public function excluirLista($lista) {
-        // Encontra o índice da lista no array de listas do usuário
-        $indice = $this->getIndiceLista($lista->getTitulo());
-
-        // Se o índice for encontrado, remove a lista
+        $indice = $this->getIndiceLista($lista->getTitulo()); // encontra o índice da lista no array de listas do usuário
         if ($indice !== false) {
-            array_splice($this->listas, $indice, 1);
+            array_splice($this->listas, $indice, 1); // se o índice for encontrado, remove apenas a lista do indice
         }
     }
 }

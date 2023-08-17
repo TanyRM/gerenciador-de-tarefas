@@ -18,15 +18,13 @@ $usuario = $gerenciador->getUsuario($nomeUsuario);
 // verifica se o formulário foi submetido para criar uma nova lista
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titulo = $_POST['titulo'];
-    $lista = new Lista($titulo); //cria a lista
-    $usuario->adicionarLista($lista); // adiciona a lista ao usuário
+    $lista = new Lista($titulo); 
+    $usuario->adicionarLista($lista); 
 
     // redireciona para a página da lista criada
     header("Location: exibir_lista.php?titulo=" . urlencode($lista->getTitulo()));
     exit;
 }
-
-$listasUsuario = $usuario->getListas(); // atualiza o array com as listas do usuario
 
 ?>
 
@@ -73,16 +71,16 @@ $listasUsuario = $usuario->getListas(); // atualiza o array com as listas do usu
         }
 
         input[type="submit"] {
-        background-color: #007bff;
-        color: #fff;
-        padding: 10px 161px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-top: 10px;
-        width: 100%;
-        text-align: center; /* Centraliza o texto no botão */
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 161px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            width: 100%;
+            text-align: center; /* Centraliza o texto no botão */
         }
 
         input[type="submit"]:hover {

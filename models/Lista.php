@@ -29,7 +29,7 @@ class Lista{
     public function excluirItem($indice){
         if (isset($this->itens[$indice])) {
             unset($this->itens[$indice]);
-            $this->itens = array_values($this->itens);
+            $this->itens = array_values($this->itens); // reorganiza os itens da lista
         }
     }
 }

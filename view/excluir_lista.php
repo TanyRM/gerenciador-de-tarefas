@@ -11,28 +11,10 @@ if (isset($_SESSION['nomeUsuario'])) {
 } 
 else {
     $_SESSION['mensagem'] = "Você precisa realizar login!";
-    header('Location: login.php'); // envia um endereço http 
+    header('Location: login.php'); 
     exit;
 }
 
-if (isset($_GET['titulo'])) {
-    $tituloLista = $_GET['titulo'];
-
-    // Encontra a lista correspondente na lista de listas do usuário
-    $listaExcluir = encontrarLista($usuario->getListas(), $tituloLista);
-
-    if (!$listaExcluir) {
-        $_SESSION['mensagem'] = "Lista não encontrada!";
-        header('Location: pagina_inicial.php');
-        exit;
-    }
-} else {
-    $_SESSION['mensagem'] = "Título da lista não fornecido!";
-    header('Location: pagina_inicial.php');
-    exit;
-}
-
-// Função para encontrar uma lista pelo título
 function encontrarLista($listas, $titulo) {
     foreach ($listas as $lista) {
         if ($lista->getTitulo() === $titulo) {
@@ -42,19 +24,37 @@ function encontrarLista($listas, $titulo) {
     return null;
 }
 
-// Verifica se a requisição é POST para confirmar a exclusão
+if (isset($_GET['titulo'])) {
+    $tituloLista = $_GET['titulo'];
+
+    // encontra a lista correspondente na lista de listas do usuário
+    $listaExcluir = encontrarLista($usuario->getListas(), $tituloLista);
+
+    if (!$listaExcluir) {
+        $_SESSION['mensagem'] = "Lista não encontrada!";
+        header('Location: pagina_inicial.php');
+        exit;
+    }
+} 
+else {
+    $_SESSION['mensagem'] = "Título da lista não fornecido!";
+    header('Location: pagina_inicial.php');
+    exit;
+}
+
+// verifica se a requisição é POST para confirmar a exclusão
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['confirmar'])) {
-        // Remove a lista do usuário
+        // remove a lista do usuário
         $usuario->excluirLista($listaExcluir);
 
-        // Redireciona o usuário de volta para a página inicial
+        // redireciona o usuário de volta para a página inicial
         $_SESSION['mensagem'] = "Lista excluída com sucesso!";
         header('Location: pagina_inicial.php');
         exit;
     } 
     elseif (isset($_POST['cancelar'])) {
-        // Redireciona o usuário de volta para a página inicial
+        // redireciona o usuário de volta para a página inicial
         header('Location: pagina_inicial.php');
         exit;
     }

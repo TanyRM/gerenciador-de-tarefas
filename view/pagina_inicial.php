@@ -22,7 +22,6 @@ if (isset($_SESSION['mensagem'])) {
 $nomeUsuario = $_SESSION['nomeUsuario'];
 $usuario = $gerenciador->getUsuario($nomeUsuario);
 
-// função para encontrar uma lista pelo título
 function encontrarLista($listas, $titulo) {
     foreach ($listas as $lista) {
         if ($lista->getTitulo() === $titulo) {
