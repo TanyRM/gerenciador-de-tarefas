@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-GerenciadorDeTarefasApplication<gerenciador-de-tarefas>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tanyrm.gerenciadordetarefas.GerenciadorDeTarefasApplication",
+            "projectName": "gerenciador-de-tarefas",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
