@@ -65,21 +65,27 @@
             align-items: center;
             margin-top: 10px;
         }
-
     </style>
 </head>
 <body>
 <h1>Login</h1>
 <!-- formulário de login -->
-<form class="login-form" method="post">
-    <label for="nome">Nome de usuário:</label>
-    <input type="text" id="nome" name="nome" required>
+<form method="post" action="/login" class="login-form">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
     <label for="senha">Senha:</label>
     <input type="password" id="senha" name="senha" required>
-    <button type="submit">Entrar</button>
-    <div class="link-container">
-        <a href="/cadastro" class="link-button">Cadastrar</a>
-    </div>
+    <button type="submit">Login</button>
 </form>
+<!-- Mostrar erro se houver -->
+<div th:if="${param.error}">
+    <p>Usuário ou senha inválidos.</p>
+</div>
+
+<!-- Mostrar mensagem de logout se houver -->
+<div th:if="${param.logout}">
+    <p>Logout realizado com sucesso.</p>
+</div>
 </body>
 </html>

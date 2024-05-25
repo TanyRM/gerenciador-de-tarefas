@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 
@@ -24,18 +23,18 @@ public class UsuarioService implements UserDetailsService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String nome) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByNome(nome);
-        if (usuario == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado");
-        }
-        return new org.springframework.security.core.userdetails.User(usuario.getNome(), usuario.getSenha(), new ArrayList<>());
-    }
-
     public void salvarUsuario(Usuario usuario) {
         usuarioRepository.save(usuario);
         logger.info("Usuário {} adicionado ao banco de dados", usuario.getNome());
         System.out.println("Usuário salvo: " + usuario.getNome());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        if (usuario == null) {
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+        return new org.springframework.security.core.userdetails.User(usuario.getEmail(), usuario.getSenha(), new ArrayList<>());
     }
 }
