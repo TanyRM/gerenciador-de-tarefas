@@ -4,6 +4,7 @@ import com.taniele.java_spring.entity.Usuario;
 import com.taniele.java_spring.repository.UsuarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +19,7 @@ public class UsuarioService implements UserDetailsService {
     private final UsuarioRepository usuarioRepository;
     private final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
 
+    @Autowired
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -31,13 +33,9 @@ public class UsuarioService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(usuario.getNome(), usuario.getSenha(), new ArrayList<>());
     }
 
-    @Transactional
     public void salvarUsuario(Usuario usuario) {
         usuarioRepository.save(usuario);
         logger.info("Usuário {} adicionado ao banco de dados", usuario.getNome());
-    }
-
-    public Usuario findByNome(String nome) {
-        return usuarioRepository.findByNome(nome);
+        System.out.println("Usuário salvo: " + usuario.getNome());
     }
 }

@@ -8,12 +8,19 @@ import java.util.List;
 @Entity
 public class Usuario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(nullable = false)
     private String nome;
-    @Id
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private String senha;
+
     @OneToMany
     private List<Lista> listas;
 
@@ -26,20 +33,20 @@ public class Usuario {
         this.listas = new ArrayList<Lista>();
     }
 
-    public List<Lista> getListas() {
-        return listas;
+    public Long getId() {
+        return id;
     }
 
-    public void setListas(List<Lista> listas) {
-        this.listas = listas;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getNome() {
+        return nome;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getEmail() {
@@ -50,11 +57,19 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getNome() {
-        return nome;
+    public String getSenha() {
+        return senha;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public List<Lista> getListas() {
+        return listas;
+    }
+
+    public void setListas(List<Lista> listas) {
+        this.listas = listas;
     }
 }

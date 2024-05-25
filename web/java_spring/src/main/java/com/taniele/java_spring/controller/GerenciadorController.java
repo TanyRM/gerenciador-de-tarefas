@@ -7,6 +7,8 @@ import com.taniele.java_spring.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -14,6 +16,7 @@ public class GerenciadorController {
 
     private final GerenciadorService gerenciadorService;
 
+    @Autowired
     public GerenciadorController(GerenciadorService gerenciadorService) {
         this.gerenciadorService = gerenciadorService;
     }
@@ -29,15 +32,23 @@ public class GerenciadorController {
     }
 
     @GetMapping("/cadastro")
-    public String cadastro() {
+    public String cadastro(Model model) {
+        model.addAttribute("usuarioForm", new Usuario());
         return "cadastro";
     }
 
     @PostMapping("/cadastro")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public String cadastrar(@RequestParam String nome, @RequestParam String email, @RequestParam String senha) {
-        gerenciadorService.salvarNovoUsuario(nome, email, senha);
-        return "redirect:/login";
+    public String cadastrar(@ModelAttribute("usuarioForm") Usuario usuario) {
+        System.out.println("Iniciando o método cadastrar");
+        System.out.println("Nome: " + usuario.getNome());
+        System.out.println("Email: " + usuario.getEmail());
+        System.out.println("Senha: " + usuario.getSenha());
+
+        gerenciadorService.salvarNovoUsuario(usuario);
+        System.out.println("Usuário salvo com sucesso");
+
+        return "/login";
     }
 }
 

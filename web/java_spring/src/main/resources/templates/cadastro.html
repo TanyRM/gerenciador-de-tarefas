@@ -80,7 +80,8 @@
 <body>
 <h1>Cadastre-se</h1>
 <!-- formulario de cadastro -->
-<form class="login-form" method="post">
+<form method="POST" action="/cadastro" class="login-form">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
     <label for="nome">Nome de usuário:</label>
     <input type="text" id="nome" name="nome" required>
     <label for="email">Email:</label>
