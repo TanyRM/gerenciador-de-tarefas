@@ -4,9 +4,12 @@ import com.taniele.java_spring.entity.Usuario;
 import com.taniele.java_spring.services.GerenciadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class GerenciadorController {
@@ -42,7 +45,7 @@ public class GerenciadorController {
         gerenciadorService.salvarNovoUsuario(usuario);
         System.out.println("Usuário salvo com sucesso");
 
-        return "/login";
+        return "login";
     }
 }
 

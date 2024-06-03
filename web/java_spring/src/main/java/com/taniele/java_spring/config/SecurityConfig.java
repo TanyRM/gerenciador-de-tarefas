@@ -29,8 +29,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .permitAll()
-                        .defaultSuccessUrl("/pagina_inicial", true)
-                        .failureUrl("/login?error=true")
+                        .defaultSuccessUrl("/login-success", true)
                         .loginProcessingUrl("/login")
                         .usernameParameter("email")
                         .passwordParameter("senha")

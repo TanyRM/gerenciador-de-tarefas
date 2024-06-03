@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="">
+<html>
 <head>
-    <title>Login</title>
+    <title>Nova Lista</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,24 +18,21 @@
         h1 {
             color: #333;
             text-align: center;
+            margin-bottom: 20px;
         }
 
-        .login-form {
-            padding: 20px;
-            border-radius: 0; /* Remove a borda do container */
-            box-shadow: none; /* Remove a sombra */
+        form {
             width: 300px;
-            text-align: left;
         }
 
-        .login-form label {
+        label {
             display: block;
             text-align: left;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
-        .login-form input[type="text"],
-        .login-form input[type="password"] {
+        input[type="text"] {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
@@ -43,44 +40,50 @@
             border-radius: 5px;
         }
 
-        .login-form button {
+        input[type="submit"] {
             background-color: #007bff;
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 161px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             margin-top: 10px;
             width: 100%;
+            text-align: center; /* Centraliza o texto no botão */
         }
 
-        .login-form button:hover {
+        input[type="submit"]:hover {
             background-color: #0056b3;
         }
 
-        .link-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-size: 14px;
             margin-top: 10px;
+            text-align: center;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            position: absolute;
+            bottom: 20px;
         }
     </style>
 </head>
 <body>
-<h1>Login</h1>
-<!-- formulário de login -->
-<form method="post" action="/login" class="login-form">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-    <label for="email">Email:</label>
-    <input type="text" id="email" name="email" required>
-    <label for="senha">Senha:</label>
-    <input type="password" id="senha" name="senha" required>
-    <button type="submit">Login</button>
+<h1>Nova Lista</h1>
+<!-- formulario de nova lista -->
+<form method="post">
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" required>
+    <br>
+    <input type="submit" value="Criar"> <!-- envia o formulario -->
 </form>
-<!-- Mostrar erro se houver -->
-<div th:if="${param.error}">
-    <p>Usuário ou senha inválidos.</p>
-</div>
+<a href="pagina_inicial.php" class="back-link">Voltar</a>
 </body>
 </html>

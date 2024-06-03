@@ -37,4 +37,8 @@ public class UsuarioService implements UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(usuario.getEmail(), usuario.getSenha(), new ArrayList<>());
     }
+
+    public Usuario findUsuarioByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
 }
