@@ -20,7 +20,7 @@ public class ListaService {
 
     public void salvarNovaLista(@NotNull Lista lista) {
         listaRepository.save(lista);
-        logger.info("Lista {} adicionada ao banco de dados", lista.getTitulo());
+        logger.info("Lista '{}' adicionada ao banco de dados", lista.getTitulo());
         System.out.println("Lista salva: " + lista.getTitulo());
     }
 
