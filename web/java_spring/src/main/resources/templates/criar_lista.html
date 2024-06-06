@@ -78,10 +78,12 @@
 <body>
 <h1>Nova Lista</h1>
 <!-- formulario de nova lista -->
-<form method="post">
+<form method="post" action="/criar_lista">
     <label for="titulo">Título:</label>
     <input type="text" id="titulo" name="titulo" required>
-    <br>
+    <label for="descricao">Descrição (opcional):</label>
+    <input type="text" id="descricao" name="descricao">
+
     <input type="submit" value="Criar"> <!-- envia o formulario -->
 </form>
 <a href="/pagina_inicial" class="back-link">Voltar</a>

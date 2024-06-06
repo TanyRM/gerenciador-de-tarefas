@@ -21,7 +21,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    @OneToMany
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Lista> listas;
 
     public Usuario() {}

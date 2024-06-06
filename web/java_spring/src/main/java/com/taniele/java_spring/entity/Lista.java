@@ -1,6 +1,8 @@
 package com.taniele.java_spring.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,44 +10,41 @@ import java.util.List;
 @Entity
 public class Lista {
 
+    @Getter
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String nome;;
+    private String titulo;
     @Column(nullable = true)
     private String descricao;
     @OneToMany
     private List<Item> itens;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     public Lista() {}
 
-    public Lista(String nome, String descricao) {
-        this.nome = nome;
+    public Lista(String titulo, String descricao) {
+        this.titulo = titulo;
         this.descricao = descricao;
         this.itens = new ArrayList<Item>();
     }
 
-    public Lista(String nome) {
-        this.nome = nome;
+    public Lista(String titulo) {
+        this.titulo = titulo;
         this.descricao = null;
         this.itens = new ArrayList<Item>();
     }
 
-    public Long getId() {
-        return id;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setTitulo(String Titulo) {
+        this.titulo = Titulo;
     }
 
     public String getDescricao() {
@@ -62,5 +61,13 @@ public class Lista {
 
     public void setItens(List<Item> itens) {
         this.itens = itens;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
