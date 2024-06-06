@@ -2,11 +2,14 @@ package com.taniele.java_spring.services;
 
 import com.taniele.java_spring.entity.Item;
 import com.taniele.java_spring.entity.Lista;
+import com.taniele.java_spring.entity.Usuario;
 import com.taniele.java_spring.repository.ListaRepository;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ListaService {
@@ -22,6 +25,10 @@ public class ListaService {
         listaRepository.save(lista);
         logger.info("Lista '{}' adicionada ao banco de dados", lista.getTitulo());
         System.out.println("Lista salva: " + lista.getTitulo());
+    }
+
+    public List<Lista> findAllByUsuario(Usuario usuario) {
+        return listaRepository.findAllByUsuario(usuario);
     }
 
 //    public void adicionarItem(@NotNull Lista lista, Item item) {

@@ -140,8 +140,12 @@
 <!-- lista de todas as listas -->
 <h2>Suas listas:</h2>
 <ul>
-    <li>
-        <!-- <a href='exibir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>'></a>  link para exibir a lista -->
+    <li th:each="lista : ${listas}">
+        <a th:href="@{'/exibir_lista/' + ${lista.id}}" th:text="${lista.titulo}"></a>
+        <a th:href="@{'/excluir_lista/' + ${lista.id}}" class="delete-button">
+            <img th:src="@{/excluir.png}" class="excluir-icon" alt="Excluir" title="Excluir">
+        </a>
+    </li>
         <!-- <a href='excluir_lista.php?titulo=<?php echo urlencode($lista->getTitulo()); ?>' class="delete-button"><img src='imagens/excluir.png' class='excluir-icon' alt='Excluir' title='Excluir'></a> link para excluir a lista -->
     </li>
 </ul>

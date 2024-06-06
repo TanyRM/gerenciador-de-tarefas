@@ -42,4 +42,8 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findByEmail(email);
     }
 
+    public Usuario findByNome(String nomeUsuario) {
+        return usuarioRepository.findByNome(nomeUsuario);
+    }
+
 }
